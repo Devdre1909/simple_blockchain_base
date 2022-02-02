@@ -9,7 +9,7 @@ Created on Sat Jan 29 17:30:29 2022
 import datetime
 import hashlib
 import json
-from flask import Flask, jsonify, request
+import math
 
 class Blockchain:
     
@@ -32,6 +32,7 @@ class Blockchain:
 
     def proof_of_work(self, previous_proof):
         new_proof = 1
+        total_guesses = 0
         check_proof = False
 
         while check_proof is False:
@@ -40,13 +41,16 @@ class Blockchain:
                 check_proof = True
             else:
                 new_proof += 1
+            total_guesses += 1
+        
+        print ('Total guesses: ' + str(total_guesses))
         return new_proof
 
     def hash_operation(self, proof, previous_proof):
-        return hashlib.sha256(str(proof**2 - previous_proof**2).encode()).hexdigest()
+        return hashlib.sha256(str(proof**2  - previous_proof**2).encode()).hexdigest()
 
     def hash(self, block):
-        encoded_block = json.dump(block, sort_keys = True).encode()
+        encoded_block = json.dumps(block, sort_keys = True).encode()
         return hashlib.sha256(encoded_block).hexdigest()
 
     def is_chain_valid(self, chain):
